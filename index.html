@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kabati Youth FC - Official Ticketing</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Official ticketing platform for Kabati Youth FC - The Bees. Purchase tickets for home matches at Thika Stadium.">
+    <meta name="keywords" content="Kabati Youth, football tickets, NSL, The Bees, Thika Stadium">
+    <meta name="author" content="Kabati Youth FC">
+
+    <!-- External Resources -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <!-- jsPDF for ticket generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* Kabati Youth color scheme - Red, White, Black */
+        .bg-primary {
+            background-color: #dc2626; /* Red */
+        }
+
+        .bg-secondary {
+            background-color: #ffffff; /* White */
+        }
+
+        .bg-accent {
+            background-color: #000000; /* Black */
+        }
+
+        .text-primary {
+            color: #dc2626;
+        }
+
+        .text-secondary {
+            color: #ffffff;
+        }
+
+        .text-accent {
+            color: #000000;
+        }
+
+        .border-primary {
+            border-color: #dc2626;
+        }
+
+        .border-secondary {
+            border-color: #ffffff;
+        }
+
+        .border-accent {
+            border-color: #000000;
+        }
+
+        /* Ticket specific styles */
+        .ticket-card {
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .ticket-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* QR Scanner styling */
+        .scanner-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 49%, rgba(255, 0, 0, 0.2) 50%, transparent 51%);
+            animation: scan 2s infinite linear;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        .scanner-frame {
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+        }
+
+        /* Ticket design */
+        .ticket-design {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 12px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ticket-design::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                #fbbf24 10px,
+                #fbbf24 20px
+            );
+        }
+        
+        .perforation {
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 80%;
+            width: 20px;
+            background: 
+                radial-gradient(circle at 0 10px, transparent 10px, white 11px) 0 0,
+                radial-gradient(circle at 0 30px, transparent 10px, white 11px) 0 0;
+            background-size: 20px 40px;
+            background-repeat: repeat-y;
+        }
+
+        /* Mobile text sizes */
+        @media (max-width: 768px) {
+            .mobile-text-lg {
+                font-size: 1.125rem;
+            }
+            
+            .mobile-text-base {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans" x-data="kabatiTicketing()">
+    <!-- Header - Matching Kabati Youth FC Style -->
+    <header class="bg-white text-red-900 sticky top-0 shadow-lg z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div>
+                        <!-- Club Logo -->
+                        <div class="w-12 h-12 bg-red-900 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            KY
+                        </div>
+                    </div>
+                    <div class="hidden md:block">
+                        <h1 class="text-xl font-bold">Kabati Youth FC</h1>
+                        <p class="text-sm opacity-80">Official Ticketing</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center space-x-1" aria-label="Main navigation">
+                    <a href="#" @click="activeTab = 'matches'"
+                        class="px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                        :class="activeTab === 'matches' ? 'bg-red-900 text-white' : 'text-red-900 hover:bg-red-100'"
+                        aria-current="page">Home Matches</a>
+
+                    <a href="#" @click="activeTab = 'my-tickets'"
+                        class="px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                        :class="activeTab === 'my-tickets' ? 'bg-red-900 text-white' : 'text-red-900 hover:bg-red-100'">My Tickets</a>
+
+                    <!-- Verify Ticket Dropdown -->
+                    <div class="relative group" x-data="{ open: false }">
+                        <button @click="open = !open" class="px-4 py-2 rounded-lg font-medium flex items-center transition-all duration-200"
+                            :class="activeTab === 'verify' ? 'bg-red-900 text-white' : 'text-red-900 hover:bg-red-100'"
+                            aria-expanded="false" aria-haspopup="true">
+                            Verify Ticket <i class="fas fa-chevron-down ml-1 text-xs" aria-hidden="true"></i>
+                        </button>
+                        <div x-show="open" @click.away="open = false" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-red-200">
+                            <a href="#" @click.prevent="openQRScanner" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100">QR Code Scan</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100">Order ID</a>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <div class="flex items-center space-x-4 lg:hidden">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-red-900 p-2 relative" aria-label="Menu" :aria-expanded="mobileMenuOpen">
+                        <i class="fas fa-bars text-2xl" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div x-show="mobileMenuOpen" class="lg:hidden mt-4 pb-2" x-cloak role="navigation" aria-label="Mobile navigation">
+                <a href="#" @click="activeTab = 'matches'; mobileMenuOpen = false" class="block py-2 px-4 rounded-lg mb-1 mobile-text-base transition-colors"
+                    :class="activeTab === 'matches' ? 'bg-red-900 text-white' : 'text-red-900 hover:bg-red-100'">Home Matches</a>
+                <a href="#" @click="activeTab = 'my-tickets'; mobileMenuOpen = false" class="block py-2 px-4 rounded-lg mb-1 mobile-text-base transition-colors"
+                    :class="activeTab === 'my-tickets' ? 'bg-red-900 text-white' : 'text-red-900 hover:bg-red-100'">My Tickets</a>
+                <a href="#" @click.prevent="openQRScanner; mobileMenuOpen = false" class="block py-2 px-4 rounded-lg mobile-text-base transition-colors text-red-900 hover:bg-red-100">QR Code Scan</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Matches Tab -->
+        <div x-show="activeTab === 'matches'" x-cloak>
+            <!-- Hero Section -->
+            <section class="mb-12" aria-labelledby="ticketing-hero-heading">
+                <div class="bg-gradient-to-r from-red-700 to-red-900 rounded-2xl p-8 md:p-12 text-white shadow-lg relative overflow-hidden">
+                    <!-- Background Pattern -->
+                    <div class="absolute inset-0 opacity-10">
+                        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.1\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"4\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+                        </div>
+                    </div>
+                    <div class="relative z-10">
+                        <h1 id="ticketing-hero-heading" class="text-3xl md:text-5xl font-black mb-4">Kabati Youth FC Tickets</h1>
+                        <p class="text-lg md:text-xl mb-6 max-w-3xl">Support The Bees at Thika Stadium! Get your digital tickets for upcoming home matches.</p>
+                        <div class="flex flex-wrap gap-4">
+                            <button @click="scrollToMatches" class="bg-white hover:bg-gray-100 text-red-800 font-bold py-3 px-6 rounded-full shadow-lg transition hover:scale-105">
+                                View Home Matches
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upcoming Home Matches -->
+            <section id="upcoming-matches" class="mb-12" aria-labelledby="upcoming-matches-heading">
+                <h2 id="upcoming-matches-heading" class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Upcoming Home Matches at Thika Stadium</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Match Cards -->
+                    <template x-for="match in homeMatches" :key="match.id">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 ticket-card">
+                            <div class="h-48 bg-gradient-to-r from-red-700 to-red-900 flex items-center justify-center text-white relative">
+                                <div class="text-center p-4">
+                                    <div class="text-lg font-bold mb-2" x-text="match.competition"></div>
+                                    <div class="flex justify-between items-center mb-4">
+                                        <div class="text-center flex-1">
+                                            <div class="font-bold text-xl" x-text="match.homeTeam"></div>
+                                            <div class="text-sm opacity-90" x-text="match.homeRecord"></div>
+                                        </div>
+                                        <div class="text-center mx-2">
+                                            <div class="text-2xl font-black">VS</div>
+                                            <div class="text-sm" x-text="match.time"></div>
+                                        </div>
+                                        <div class="text-center flex-1">
+                                            <div class="font-bold text-xl" x-text="match.awayTeam"></div>
+                                            <div class="text-sm opacity-90" x-text="match.awayRecord"></div>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm" x-text="match.stadium"></div>
+                                </div>
+                                <div class="absolute top-4 right-4 bg-white text-red-800 px-3 py-1 rounded-full text-sm font-bold" x-text="match.status"></div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-800" x-text="match.homeTeam + ' vs ' + match.awayTeam"></h3>
+                                        <p class="text-gray-600"><i class="fas fa-calendar-alt mr-2"></i><span x-text="match.date"></span></p>
+                                        <p class="text-gray-600"><i class="fas fa-map-marker-alt mr-2"></i><span x-text="match.stadium"></span></p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-2xl font-bold text-red-700">KSh 100</span>
+                                    <button @click="getTicket(match)" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-full transition">
+                                        Get Ticket
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- How It Works -->
+            <section class="mb-12" aria-labelledby="how-it-works-heading">
+                <h2 id="how-it-works-heading" class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">How To Get Your Tickets</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-futbol text-red-700 text-2xl" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Select Match</h3>
+                        <p class="text-gray-600 text-sm">Choose from Kabati Youth's home fixtures</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-ticket-alt text-red-700 text-2xl" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Get Ticket</h3>
+                        <p class="text-gray-600 text-sm">Provide your details to receive a digital ticket</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-download text-red-700 text-2xl" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Download</h3>
+                        <p class="text-gray-600 text-sm">Download your ticket with unique QR code</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-qrcode text-red-700 text-2xl" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">Enjoy the Game</h3>
+                        <p class="text-gray-600 text-sm">Present QR code at Thika Stadium (KSh 100 at gate)</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- My Tickets Tab -->
+        <div x-show="activeTab === 'my-tickets'" x-cloak>
+            <div class="mb-8" aria-labelledby="my-tickets-heading">
+                <div class="bg-gradient-to-r from-red-700 to-red-900 rounded-2xl p-6 md:p-8 text-white shadow-lg">
+                    <div class="flex flex-col md:flex-row items-center justify-between">
+                        <div>
+                            <h1 id="my-tickets-heading" class="text-2xl md:text-4xl font-black mb-2">My Tickets</h1>
+                            <p class="text-lg opacity-90">Your upcoming matches and ticket history</p>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 text-center">
+                                <div class="text-2xl font-bold" x-text="purchasedTickets.length"></div>
+                                <div class="text-sm opacity-90">Tickets</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Tickets -->
+            <div class="mb-8" x-show="upcomingTickets.length > 0">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Upcoming Matches</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <template x-for="ticket in upcomingTickets" :key="ticket.id">
+                        <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                            <div class="bg-gradient-to-r from-red-700 to-red-900 p-4 text-white">
+                                <div class="flex justify-between items-center">
+                                    <h3 class="font-bold text-lg" x-text="ticket.matchTitle"></h3>
+                                    <span class="bg-white text-red-700 px-2 py-1 rounded-full text-xs font-bold">UPCOMING</span>
+                                </div>
+                                <p class="text-sm opacity-90" x-text="ticket.matchDate + ' • ' + ticket.matchTime"></p>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-center mb-4">
+                                    <div>
+                                        <p class="text-gray-600">General Admission Ticket</p>
+                                        <p class="text-sm text-gray-500" x-text="ticket.stadium"></p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-lg text-red-700">KSh 100</p>
+                                        <p class="text-xs text-gray-500">Ticket #<span x-text="ticket.ticketId"></span></p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <button @click="viewTicket(ticket)" class="text-red-700 hover:text-red-800 font-medium flex items-center text-sm">
+                                        <i class="fas fa-eye mr-1" aria-hidden="true"></i> View Ticket
+                                    </button>
+                                    <button @click="downloadTicketAsPDF(ticket)" class="bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-full transition text-sm flex items-center">
+                                        <i class="fas fa-download mr-1" aria-hidden="true"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Past Tickets -->
+            <div x-show="pastTickets.length > 0">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Ticket History</h2>
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="hidden md:block">
+                        <table class="w-full">
+                            <thead class="bg-red-700 text-white">
+                                <tr>
+                                    <th class="py-3 px-4 text-left text-sm">Match</th>
+                                    <th class="py-3 px-4 text-left text-sm">Date</th>
+                                    <th class="py-3 px-4 text-left text-sm">Stadium</th>
+                                    <th class="py-3 px-4 text-left text-sm">Price</th>
+                                    <th class="py-3 px-4 text-left text-sm">Status</th>
+                                    <th class="py-3 px-4 text-left text-sm">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="ticket in pastTickets" :key="ticket.id">
+                                    <tr class="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                                        <td class="py-3 px-4">
+                                            <div class="font-medium" x-text="ticket.matchTitle"></div>
+                                        </td>
+                                        <td class="py-3 px-4" x-text="ticket.matchDate"></td>
+                                        <td class="py-3 px-4" x-text="ticket.stadium"></td>
+                                        <td class="py-3 px-4 font-medium">KSh 100</td>
+                                        <td class="py-3 px-4">
+                                            <span class="px-2 py-1 rounded-full text-xs" 
+                                                  :class="ticket.status === 'Used' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'"
+                                                  x-text="ticket.status"></span>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <button @click="viewTicket(ticket)" class="text-red-700 hover:text-red-800 font-medium text-sm">
+                                                View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Mobile Table -->
+                    <div class="md:hidden">
+                        <div class="divide-y divide-gray-200">
+                            <template x-for="ticket in pastTickets" :key="ticket.id">
+                                <div class="p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h3 class="font-bold text-gray-800" x-text="ticket.matchTitle"></h3>
+                                            <p class="text-sm text-gray-600" x-text="ticket.matchDate"></p>
+                                        </div>
+                                        <span class="px-2 py-1 rounded-full text-xs" 
+                                              :class="ticket.status === 'Used' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'"
+                                              x-text="ticket.status"></span>
+                                    </div>
+                                    <div class="flex justify-between text-sm text-gray-600 mb-2">
+                                        <span x-text="ticket.stadium"></span>
+                                        <span class="font-medium">KSh 100</span>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <button @click="viewTicket(ticket)" class="text-red-700 hover:text-red-800 font-medium text-sm">
+                                            View Ticket
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div x-show="purchasedTickets.length === 0" class="text-center py-12">
+                <i class="fas fa-ticket-alt text-5xl text-gray-300 mb-4" aria-hidden="true"></i>
+                <h3 class="text-xl font-bold text-gray-700 mb-2">No tickets yet</h3>
+                <p class="text-gray-500 max-w-md mx-auto mb-6">You haven't reserved any tickets yet. Browse upcoming home matches to get your tickets.</p>
+                <button @click="activeTab = 'matches'" class="bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-full transition">
+                    Browse Matches
+                </button>
+            </div>
+        </div>
+
+        <!-- Get Ticket Modal -->
+        <div x-show="getTicketModalOpen" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div x-show="getTicketModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" 
+                     x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" 
+                     class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true">
+                </div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div x-show="getTicketModalOpen" x-transition:enter="ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                    
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="text-2xl leading-6 font-bold text-gray-900">Get Your Ticket</h3>
+                                    <button @click="getTicketModalOpen = false" type="button" class="text-gray-400 hover:text-gray-500">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                                        <h4 class="font-bold mb-2">Ticket Details</h4>
+                                        <div class="flex justify-between py-2">
+                                            <span x-text="selectedMatch.homeTeam + ' vs ' + selectedMatch.awayTeam"></span>
+                                            <span>KSh 100</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm text-gray-600">
+                                            <span x-text="selectedMatch.date"></span>
+                                            <span x-text="selectedMatch.time"></span>
+                                        </div>
+                                        <div class="text-sm text-gray-600 mt-1" x-text="selectedMatch.stadium"></div>
+                                    </div>
+                                    
+                                    <form @submit.prevent="generateTicket">
+                                        <div class="mb-4">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                                                Full Name
+                                            </label>
+                                            <input x-model="customer.name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" id="name" type="text" placeholder="John Doe" required>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                                                Email
+                                            </label>
+                                            <input x-model="customer.email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" id="email" type="email" placeholder="john@example.com" required>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
+                                                Phone Number
+                                            </label>
+                                            <input x-model="customer.phone" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" id="phone" type="tel" placeholder="+254 712 345 678" required>
+                                        </div>
+                                        
+                                        <div class="flex justify-end space-x-4 mt-6">
+                                            <button @click="getTicketModalOpen = false" type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                                                Cancel
+                                            </button>
+                                            <button type="submit" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded">
+                                                Generate Ticket
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket Display Modal -->
+        <div x-show="ticketDisplayOpen" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div x-show="ticketDisplayOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" 
+                     x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" 
+                     class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true">
+                </div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div x-show="ticketDisplayOpen" x-transition:enter="ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+                    
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="text-2xl leading-6 font-bold text-gray-900">Your Ticket</h3>
+                                    <button @click="ticketDisplayOpen = false" type="button" class="text-gray-400 hover:text-gray-500">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4 text-center">
+                                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                                        <i class="fas fa-check text-green-600 text-xl"></i>
+                                    </div>
+                                    <h4 class="text-lg font-medium text-gray-900 mb-2">Ticket Generated!</h4>
+                                    <p class="text-gray-600 mb-4">Your ticket has been sent to <span x-text="customer.email" class="font-semibold"></span></p>
+                                    
+                                    <!-- Ticket Preview -->
+                                    <div id="ticket-preview" class="mb-4 p-4 border rounded-lg bg-white">
+                                        <div class="ticket-design p-4 text-center relative">
+                                            <div class="perforation"></div>
+                                            <h2 class="text-xl font-bold mb-2">Kabati Youth FC</h2>
+                                            <h3 class="text-lg font-semibold mb-1" x-text="selectedMatch.homeTeam + ' vs ' + selectedMatch.awayTeam"></h3>
+                                            <p class="text-sm mb-1" x-text="selectedMatch.date + ' • ' + selectedMatch.time"></p>
+                                            <p class="text-sm mb-3" x-text="selectedMatch.stadium"></p>
+                                            <div class="flex justify-center mb-3">
+                                                <div id="ticket-qrcode" class="bg-white p-2 rounded"></div>
+                                            </div>
+                                            <p class="text-sm font-bold">GENERAL ADMISSION</p>
+                                            <p class="text-xs mt-2" x-text="'Ticket #: ' + ticketId"></p>
+                                            <p class="text-xs" x-text="'Holder: ' + customer.name"></p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-100 p-4 rounded-lg text-left mb-4">
+                                        <h5 class="font-bold mb-2">Important Information</h5>
+                                        <p class="text-sm text-gray-600 mb-2">• Present this QR code at Thika Stadium gate</p>
+                                        <p class="text-sm text-gray-600 mb-2">• Payment of KSh 100 is required at the gate</p>
+                                        <p class="text-sm text-gray-600">• Gates open 1.5 hours before kickoff</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button @click="downloadTicketAsPDF(currentTicket)" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-700 text-base font-medium text-white hover:bg-red-800 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                            <i class="fas fa-download mr-2"></i> Download Ticket
+                        </button>
+                        <button @click="ticketDisplayOpen = false; activeTab = 'my-tickets'" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            View My Tickets
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Scanner Modal -->
+        <div x-show="qrScannerOpen" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div x-show="qrScannerOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" 
+                     x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" 
+                     class="fixed inset-0 transition-opacity bg-black opacity-90" aria-hidden="true">
+                </div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div x-show="qrScannerOpen" x-transition:enter="ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="text-2xl leading-6 font-bold text-gray-900">QR Code Scanner</h3>
+                                    <button @click="qrScannerOpen = false" type="button" class="text-gray-400 hover:text-gray-500">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <p class="text-gray-600 mb-6">Position the QR code within the frame to scan</p>
+                                    
+                                    <div class="scanner-container">
+                                        <div class="scanner-frame aspect-square bg-gray-200 flex items-center justify-center">
+                                            <i class="fas fa-camera text-4xl text-gray-400"></i>
+                                            <div class="scanner-overlay"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6 text-center">
+                                        <p class="text-gray-500 text-sm">Having trouble scanning? <a href="#" class="text-red-700">Enter code manually</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button @click="simulateQRScan" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-700 text-base font-medium text-white hover:bg-red-800 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                            Simulate Scan
+                        </button>
+                        <button @click="qrScannerOpen = false" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Scan Result Modal -->
+        <div x-show="qrResultOpen" class="fixed inset-0 overflow-y-auto z-50" x-cloak>
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div x-show="qrResultOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" 
+                     x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" 
+                     class="fixed inset-0 transition-opacity modal-overlay" aria-hidden="true">
+                </div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <div x-show="qrResultOpen" x-transition:enter="ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave="ease-in duration-200" 
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                     class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+                    
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="text-2xl leading-6 font-bold text-gray-900">Ticket Verification</h3>
+                                    <button @click="qrResultOpen = false" type="button" class="text-gray-400 hover:text-gray-500">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4 text-center">
+                                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                                        <i class="fas fa-check text-green-600 text-xl"></i>
+                                    </div>
+                                    <h4 class="text-lg font-medium text-gray-900 mb-2">Ticket Verified Successfully!</h4>
+                                    <p class="text-gray-600 mb-4">This ticket is valid for entry to the match.</p>
+                                    
+                                    <div class="bg-gray-100 p-4 rounded-lg text-left mb-4">
+                                        <h5 class="font-bold mb-2">Ticket Details</h5>
+                                        <p class="text-sm"><span class="font-semibold">Match:</span> Kabati Youth vs Luanda Villa</p>
+                                        <p class="text-sm"><span class="font-semibold">Ticket Holder:</span> John Doe</p>
+                                        <p class="text-sm"><span class="font-semibold">Category:</span> General Admission</p>
+                                        <p class="text-sm"><span class="font-semibold">Date:</span> October 19, 2025 • 12:00 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button @click="qrResultOpen = false" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-700 text-base font-medium text-white hover:bg-red-800 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- Club Info -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Kabati Youth FC</h3>
+                    <p class="text-gray-300 mb-4">The Bees - Proudly representing Murang'a in the National Super League.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white transition" aria-label="Facebook">
+                            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="text-white transition" aria-label="Twitter">
+                            <i class="fab fa-twitter" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="text-white transition" aria-label="Instagram">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="text-white transition" aria-label="YouTube">
+                            <i class="fab fa-youtube" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" @click="activeTab = 'matches'" class="text-white transition">Home Matches</a></li>
+                        <li><a href="#" @click="activeTab = 'my-tickets'" class="text-white transition">My Tickets</a></li>
+                        <li><a href="#" @click.prevent="openQRScanner" class="text-white transition">Verify Ticket</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact Us</h3>
+                    <ul class="space-y-3 text-white">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-red-500" aria-hidden="true"></i>
+                            <span>Thika Stadium, Thika, Kenya</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone mt-1 mr-3 text-red-500" aria-hidden="true"></i>
+                            <span>+254 712 345 678</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-3 text-red-500" aria-hidden="true"></i>
+                            <span>tickets@kabatiyouthfc.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-white text-sm mb-4 md:mb-0">&copy; 2025 Kabati Youth FC. All rights reserved.</p>
+                <div class="flex space-x-6 text-sm text-white">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+   <script>
+    function kabatiTicketing() {
+        return {
+            // App State
+            activeTab: 'matches',
+            mobileMenuOpen: false,
+            getTicketModalOpen: false,
+            ticketDisplayOpen: false,
+            qrScannerOpen: false,
+            qrResultOpen: false,
+            
+            // Ticket Selection
+            selectedMatch: {},
+            ticketId: '',
+            currentTicket: {},
+            
+            // Customer Info
+            customer: {
+                name: '',
+                email: '',
+                phone: ''
+            },
+            
+            // Match Data - Only home matches at Thika Stadium
+            homeMatches: [
+                {
+                    id: 1,
+                    competition: "National Super League",
+                    homeTeam: "Kabati Youth",
+                    awayTeam: "Luanda Villa",
+                    homeRecord: "(1-1-1)",
+                    awayRecord: "(1-2-0)",
+                    date: "October 19, 2025",
+                    time: "12:00 PM",
+                    stadium: "Thika Stadium",
+                    location: "Thika",
+                    status: "Tickets Available"
+                },
+                {
+                    id: 2,
+                    competition: "National Super League", 
+                    homeTeam: "Kabati Youth",
+                    awayTeam: "Naivas FC",
+                    homeRecord: "(1-1-1)",
+                    awayRecord: "(1-1-1)",
+                    date: "October 26, 2025",
+                    time: "3:00 PM", 
+                    stadium: "Thika Stadium",
+                    location: "Thika",
+                    status: "Tickets Available"
+                },
+                {
+                    id: 3,
+                    competition: "National Super League",
+                    homeTeam: "Kabati Youth", 
+                    awayTeam: "Mombasa Elite",
+                    homeRecord: "(1-1-1)",
+                    awayRecord: "(2-0-1)",
+                    date: "November 9, 2025",
+                    time: "2:00 PM",
+                    stadium: "Thika Stadium",
+                    location: "Thika",
+                    status: "Coming Soon"
+                }
+            ],
+            
+            // Purchased Tickets
+            purchasedTickets: [
+                // Sample past ticket
+                {
+                    id: 1001,
+                    matchTitle: "Kabati Youth vs Mwatate United",
+                    matchDate: "October 12, 2025",
+                    matchTime: "3:00 PM",
+                    stadium: "Thika Stadium",
+                    ticketId: "KYFC1001",
+                    status: "Used",
+                    customerName: "Sample Customer"
+                }
+            ],
+            
+            // Computed Properties
+            get upcomingTickets() {
+                return this.purchasedTickets.filter(ticket => {
+                    const ticketDate = new Date(ticket.matchDate);
+                    const today = new Date();
+                    return ticketDate >= today && ticket.status !== 'Used';
+                });
+            },
+            
+            get pastTickets() {
+                return this.purchasedTickets.filter(ticket => {
+                    const ticketDate = new Date(ticket.matchDate);
+                    const today = new Date();
+                    return ticketDate < today || ticket.status === 'Used';
+                });
+            },
+            
+            // Methods
+            scrollToMatches() {
+                document.getElementById('upcoming-matches').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            },
+            
+            getTicket(match) {
+                this.selectedMatch = match;
+                // Reset customer info
+                this.customer = {
+                    name: '',
+                    email: '',
+                    phone: ''
+                };
+                this.getTicketModalOpen = true;
+            },
+            
+            generateTicket() {
+                // Generate ticket ID
+                this.ticketId = 'KYFC' + Date.now().toString().slice(-6);
+                
+                // Create ticket object with customer data
+                this.currentTicket = {
+                    id: Date.now(),
+                    matchTitle: this.selectedMatch.homeTeam + ' vs ' + this.selectedMatch.awayTeam,
+                    matchDate: this.selectedMatch.date,
+                    matchTime: this.selectedMatch.time,
+                    stadium: this.selectedMatch.stadium,
+                    ticketId: this.ticketId,
+                    status: 'Active',
+                    customerName: this.customer.name,
+                    customerEmail: this.customer.email
+                };
+                
+                // Add to purchased tickets
+                this.purchasedTickets.push({...this.currentTicket});
+                
+                // Show ticket first, then generate QR code
+                this.getTicketModalOpen = false;
+                this.ticketDisplayOpen = true;
+                
+                // Generate QR code after a small delay to ensure DOM is updated
+                setTimeout(() => {
+                    this.generateQRCode();
+                }, 100);
+            },
+            
+            generateQRCode() {
+                // Clear previous QR code
+                const qrContainer = document.getElementById('ticket-qrcode');
+                if (qrContainer) {
+                    qrContainer.innerHTML = '';
+                    
+                    // Generate QR code with ticket information
+                    const qrData = JSON.stringify({
+                        ticketId: this.ticketId,
+                        match: this.currentTicket.matchTitle,
+                        date: this.currentTicket.matchDate,
+                        customer: this.customer.name
+                    });
+                    
+                    // Use QRCode.toCanvas with proper error handling
+                    QRCode.toCanvas(qrContainer, qrData, {
+                        width: 120,
+                        margin: 1,
+                        color: {
+                            dark: '#dc2626',
+                            light: '#FFFFFF'
+                        }
+                    }, function (error) {
+                        if (error) {
+                            console.error('QR Code error:', error);
+                            // Create fallback
+                            qrContainer.innerHTML = '<div style="width:120px;height:120px;background:#dc2626;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;">TICKET</div>';
+                        }
+                    });
+                }
+            },
+            
+            sendEmailConfirmation() {
+                // In a real app, this would call an email API
+                console.log(`Email sent to ${this.customer.email} with ticket details`);
+            },
+            
+            viewTicket(ticket) {
+                this.currentTicket = ticket;
+                // Store customer name for display
+                if (ticket.customerName) {
+                    this.customer.name = ticket.customerName;
+                }
+                
+                this.ticketDisplayOpen = true;
+                
+                // Regenerate QR code after a small delay
+                setTimeout(() => {
+                    const qrContainer = document.getElementById('ticket-qrcode');
+                    if (qrContainer) {
+                        qrContainer.innerHTML = '';
+                        
+                        const qrData = JSON.stringify({
+                            ticketId: ticket.ticketId,
+                            match: ticket.matchTitle,
+                            date: ticket.matchDate,
+                            customer: ticket.customerName || 'Ticket Holder'
+                        });
+                        
+                        QRCode.toCanvas(qrContainer, qrData, {
+                            width: 120,
+                            margin: 1,
+                            color: {
+                                dark: '#dc2626',
+                                light: '#FFFFFF'
+                            }
+                        }, function (error) {
+                            if (error) {
+                                console.error('QR Code error:', error);
+                                qrContainer.innerHTML = '<div style="width:120px;height:120px;background:#dc2626;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;">TICKET</div>';
+                            }
+                        });
+                    }
+                }, 100);
+            },
+            
+            async downloadTicketAsPDF(ticket) {
+                try {
+                    // Create a temporary ticket element with NSL logo
+                    const ticketElement = document.createElement('div');
+                    ticketElement.style.width = '400px';
+                    ticketElement.style.padding = '20px';
+                    ticketElement.style.backgroundColor = 'white';
+                    ticketElement.style.fontFamily = 'Arial, sans-serif';
+                    ticketElement.style.position = 'fixed';
+                    ticketElement.style.left = '-1000px';
+                    ticketElement.style.top = '0';
+                    
+                    // Get customer name from ticket or current customer
+                    const customerName = ticket.customerName || this.customer.name || 'Ticket Holder';
+                    
+                    // Ticket content with NSL logo
+                    ticketElement.innerHTML = `
+                        <div style="text-align: center; border: 2px solid #dc2626; border-radius: 12px; padding: 20px; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; position: relative; overflow: hidden;">
+                            <!-- NSL Logo Section -->
+                            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px;">
+                                <div style="background: white; padding: 8px; border-radius: 8px; margin-right: 10px;">
+                                    <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">NSL</div>
+                                </div>
+                                <div style="text-align: left;">
+                                    <div style="font-size: 14px; font-weight: bold;">NATIONAL SUPER LEAGUE</div>
+                                    <div style="font-size: 10px; opacity: 0.9;">Official Match Ticket</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Club Header -->
+                            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 5px;">Kabati Youth FC</h2>
+                            <div style="height: 2px; background: white; margin: 10px 0;"></div>
+                            
+                            <!-- Match Details -->
+                            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">${ticket.matchTitle}</h3>
+                            <p style="font-size: 14px; margin-bottom: 5px;">${ticket.matchDate} • ${ticket.matchTime}</p>
+                            <p style="font-size: 14px; margin-bottom: 15px;">${ticket.stadium}</p>
+                            
+                            <!-- QR Code Container -->
+                            <div style="background: white; padding: 15px; border-radius: 8px; display: inline-block; margin-bottom: 15px;">
+                                <div id="temp-pdf-qrcode"></div>
+                            </div>
+                            
+                            <!-- Ticket Info -->
+                            <p style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">GENERAL ADMISSION</p>
+                            <p style="font-size: 12px; margin-bottom: 3px;">Ticket #: ${ticket.ticketId}</p>
+                            <p style="font-size: 12px; margin-bottom: 3px;">Holder: ${customerName}</p>
+                            <p style="font-size: 12px;">Price: KSh 100 (Pay at Gate)</p>
+                            
+                            <!-- Perforation -->
+                            <div style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); height: 80%; width: 20px; background: radial-gradient(circle at 0 10px, transparent 10px, white 11px) 0 0, radial-gradient(circle at 0 30px, transparent 10px, white 11px) 0 0; background-size: 20px 40px; background-repeat: repeat-y;"></div>
+                            
+                            <!-- Top Border Pattern -->
+                            <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(45deg, transparent, transparent 10px, #fbbf24 10px, #fbbf24 20px);"></div>
+                        </div>
+                        
+                        <!-- Important Information -->
+                        <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dc2626;">
+                            <h4 style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #dc2626;">Important Information:</h4>
+                            <ul style="font-size: 11px; color: #666; margin: 0; padding-left: 15px;">
+                                <li>Present this QR code at Thika Stadium gate</li>
+                                <li>Payment of KSh 100 is required at the gate</li>
+                                <li>Gates open 1.5 hours before kickoff</li>
+                                <li>This ticket is non-transferable after entry</li>
+                                <li>NSL & Kabati Youth FC Official Ticket</li>
+                            </ul>
+                        </div>
+                    `;
+
+                    // Add to DOM temporarily
+                    document.body.appendChild(ticketElement);
+
+                    // Generate QR code data
+                    const qrData = JSON.stringify({
+                        ticketId: ticket.ticketId,
+                        match: ticket.matchTitle,
+                        date: ticket.matchDate,
+                        customer: customerName,
+                        league: "NSL"
+                    });
+
+                    // Create QR code
+                    const qrContainer = document.getElementById('temp-pdf-qrcode');
+                    if (qrContainer) {
+                        await new Promise((resolve) => {
+                            QRCode.toCanvas(qrContainer, qrData, {
+                                width: 120,
+                                margin: 1,
+                                color: {
+                                    dark: '#dc2626',
+                                    light: '#FFFFFF'
+                                }
+                            }, function (error) {
+                                if (error) {
+                                    console.error('QR Code generation failed:', error);
+                                    // Create a simple fallback
+                                    const canvas = document.createElement('canvas');
+                                    canvas.width = 120;
+                                    canvas.height = 120;
+                                    const ctx = canvas.getContext('2d');
+                                    ctx.fillStyle = '#dc2626';
+                                    ctx.fillRect(0, 0, 120, 120);
+                                    ctx.fillStyle = 'white';
+                                    ctx.font = '12px Arial';
+                                    ctx.fillText('TICKET', 40, 60);
+                                    qrContainer.appendChild(canvas);
+                                }
+                                resolve();
+                            });
+                        });
+
+                        // Wait a bit for QR code to render
+                        await new Promise(resolve => setTimeout(resolve, 500));
+
+                        // Generate PDF
+                        const canvas = await html2canvas(ticketElement, {
+                            scale: 2,
+                            useCORS: true,
+                            logging: false,
+                            backgroundColor: '#ffffff'
+                        });
+
+                        const imgData = canvas.toDataURL('image/png');
+                        const { jsPDF } = window.jspdf;
+                        const pdf = new jsPDF('p', 'mm', 'a6');
+                        
+                        const imgWidth = 105;
+                        const imgHeight = canvas.height * imgWidth / canvas.width;
+                        
+                        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                        
+                        // Add NSL and club branding to PDF metadata
+                        pdf.setProperties({
+                            title: `Kabati Youth FC Ticket - ${ticket.matchTitle}`,
+                            subject: 'NSL Match Ticket',
+                            author: 'Kabati Youth FC - National Super League',
+                            keywords: 'nsl, kabati youth, football ticket'
+                        });
+
+                        pdf.save(`NSL-KabatiYouth-Ticket-${ticket.ticketId}.pdf`);
+                        
+                        // Clean up
+                        document.body.removeChild(ticketElement);
+                        
+                        // Show success message
+                        alert('Ticket downloaded successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                    alert('Error generating ticket. Please try again.');
+                    // Clean up in case of error
+                    const tempElement = document.getElementById('temp-pdf-qrcode');
+                    if (tempElement && tempElement.parentNode) {
+                        document.body.removeChild(tempElement.parentNode);
+                    }
+                }
+            },
+            
+            openQRScanner() {
+                this.qrScannerOpen = true;
+                this.mobileMenuOpen = false;
+            },
+            
+            simulateQRScan() {
+                this.qrScannerOpen = false;
+                setTimeout(() => {
+                    this.qrResultOpen = true;
+                }, 300);
+            }
+        };
+    }
+</script>
+</body>
+</html>
