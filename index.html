@@ -118,43 +118,139 @@
             box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
         }
 
-        /* Ticket design */
-        .ticket-design {
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            border-radius: 12px;
-            color: white;
+       /* Custom Ticket Design */
+        .kabati-ticket {
+            background: white;
+            border-radius: 16px;
+            color: #dc2626;
             position: relative;
             overflow: hidden;
+            border: 3px solid #dc2626;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         
-        .ticket-design::before {
+        .kabati-ticket::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 6px;
             background: repeating-linear-gradient(
                 45deg,
-                transparent,
-                transparent 10px,
-                #fbbf24 10px,
-                #fbbf24 20px
+                #dc2626,
+                #dc2626 10px,
+                white 10px,
+                white 20px
             );
         }
         
-        .perforation {
+        .kabati-ticket::after {
+            content: '';
             position: absolute;
-            right: -10px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #dc2626, #b91c1c, #dc2626);
+        }
+        
+        .ticket-perforation {
+            position: absolute;
+            right: -12px;
             top: 50%;
             transform: translateY(-50%);
-            height: 80%;
-            width: 20px;
+            height: 85%;
+            width: 24px;
             background: 
-                radial-gradient(circle at 0 10px, transparent 10px, white 11px) 0 0,
-                radial-gradient(circle at 0 30px, transparent 10px, white 11px) 0 0;
-            background-size: 20px 40px;
+                radial-gradient(circle at 0 12px, transparent 12px, white 13px) 0 0,
+                radial-gradient(circle at 0 36px, transparent 12px, white 13px) 0 0;
+            background-size: 24px 48px;
             background-repeat: repeat-y;
+        }
+        
+        .nsl-logo {
+            background: linear-gradient(45deg, #1e3a8a, #2563eb);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            border: 2px solid #dc2626;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .club-logo {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            border: 3px solid #dc2626;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ticket-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #dc2626, transparent);
+            margin: 10px 0;
+        }
+        
+        .ticket-glow {
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.2);
+        }
+        
+        .bee-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            background-image: 
+                radial-gradient(circle at 20% 30%, #dc2626 2px, transparent 2px),
+                radial-gradient(circle at 80% 70%, #dc2626 2px, transparent 2px),
+                radial-gradient(circle at 40% 80%, #dc2626 2px, transparent 2px),
+                radial-gradient(circle at 60% 20%, #dc2626 2px, transparent 2px);
+            background-size: 100px 100px;
+            pointer-events: none;
+        }
+        /* Logo styling */
+        .team-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 4px;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .match-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            background: white;
+            border-radius: 12px;
+            padding: 8px;
+            border: 3px solid #fbbf24;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nsl-logo-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: white;
+            padding: 4px;
+            border: 2px solid #1e3a8a;
         }
 
         /* Mobile text sizes */
@@ -165,6 +261,16 @@
             
             .mobile-text-base {
                 font-size: 1rem;
+            }
+            
+            .team-logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .match-logo {
+                width: 60px;
+                height: 60px;
             }
         }
     </style>
@@ -178,9 +284,7 @@
                 <div class="flex items-center space-x-4">
                     <div>
                         <!-- Club Logo -->
-                        <div class="w-12 h-12 bg-red-900 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                            KY
-                        </div>
+                        <img src="teamlogo/kabati.png" alt="Kabati Youth FC" class="w-12 h-12 rounded-full object-contain bg-red-900 p-1">
                     </div>
                     <div class="hidden md:block">
                         <h1 class="text-xl font-bold">Kabati Youth FC</h1>
@@ -245,6 +349,10 @@
                         </div>
                     </div>
                     <div class="relative z-10">
+                        <div class="flex items-center justify-center mb-4">
+                            <img src="teamlogo/kabati.png" alt="Kabati Youth FC" class="w-20 h-20 rounded-full object-contain bg-white p-2 mr-4">
+                            <img src="teamlogo/nsllogo.png" alt="National Super League" class="w-16 h-16 rounded-lg object-contain bg-white p-1">
+                        </div>
                         <h1 id="ticketing-hero-heading" class="text-3xl md:text-5xl font-black mb-4">Kabati Youth FC Tickets</h1>
                         <p class="text-lg md:text-xl mb-6 max-w-3xl">Support The Bees at Thika Stadium! Get your digital tickets for upcoming home matches.</p>
                         <div class="flex flex-wrap gap-4">
@@ -269,6 +377,7 @@
                                     <div class="text-lg font-bold mb-2" x-text="match.competition"></div>
                                     <div class="flex justify-between items-center mb-4">
                                         <div class="text-center flex-1">
+                                            <img :src="'teamlogo/kabati.png'" :alt="match.homeTeam" class="team-logo mx-auto mb-2">
                                             <div class="font-bold text-xl" x-text="match.homeTeam"></div>
                                             <div class="text-sm opacity-90" x-text="match.homeRecord"></div>
                                         </div>
@@ -277,6 +386,7 @@
                                             <div class="text-sm" x-text="match.time"></div>
                                         </div>
                                         <div class="text-center flex-1">
+                                            <img :src="'teamlogo/' + match.awayTeamLogo" :alt="match.awayTeam" class="team-logo mx-auto mb-2">
                                             <div class="font-bold text-xl" x-text="match.awayTeam"></div>
                                             <div class="text-sm opacity-90" x-text="match.awayRecord"></div>
                                         </div>
@@ -349,9 +459,12 @@
             <div class="mb-8" aria-labelledby="my-tickets-heading">
                 <div class="bg-gradient-to-r from-red-700 to-red-900 rounded-2xl p-6 md:p-8 text-white shadow-lg">
                     <div class="flex flex-col md:flex-row items-center justify-between">
-                        <div>
-                            <h1 id="my-tickets-heading" class="text-2xl md:text-4xl font-black mb-2">My Tickets</h1>
-                            <p class="text-lg opacity-90">Your upcoming matches and ticket history</p>
+                        <div class="flex items-center">
+                            <img src="teamlogo/kabati.png" alt="Kabati Youth FC" class="w-16 h-16 rounded-full object-contain bg-white p-2 mr-4">
+                            <div>
+                                <h1 id="my-tickets-heading" class="text-2xl md:text-4xl font-black mb-2">My Tickets</h1>
+                                <p class="text-lg opacity-90">Your upcoming matches and ticket history</p>
+                            </div>
                         </div>
                         <div class="mt-4 md:mt-0">
                             <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 text-center">
@@ -514,7 +627,12 @@
                                 
                                 <div class="mt-4">
                                     <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                                        <h4 class="font-bold mb-2">Ticket Details</h4>
+                                        <div class="flex items-center justify-center mb-4">
+                                            <img src="teamlogo/kabati.png" :alt="selectedMatch.homeTeam" class="match-logo mx-2">
+                                            <div class="text-2xl font-black mx-4">VS</div>
+                                            <img :src="'teamlogo/' + selectedMatch.awayTeamLogo" :alt="selectedMatch.awayTeam" class="match-logo mx-2">
+                                        </div>
+                                        <h4 class="font-bold mb-2 text-center" x-text="selectedMatch.homeTeam + ' vs ' + selectedMatch.awayTeam"></h4>
                                         <div class="flex justify-between py-2">
                                             <span x-text="selectedMatch.homeTeam + ' vs ' + selectedMatch.awayTeam"></span>
                                             <span>KSh 100</span>
@@ -523,7 +641,7 @@
                                             <span x-text="selectedMatch.date"></span>
                                             <span x-text="selectedMatch.time"></span>
                                         </div>
-                                        <div class="text-sm text-gray-600 mt-1" x-text="selectedMatch.stadium"></div>
+                                        <div class="text-sm text-gray-600 mt-1 text-center" x-text="selectedMatch.stadium"></div>
                                     </div>
                                     
                                     <form @submit.prevent="generateTicket">
@@ -580,7 +698,7 @@
                      x-transition:leave="ease-in duration-200" 
                      x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
                      x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
-                     class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+                     class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
@@ -599,20 +717,47 @@
                                     <h4 class="text-lg font-medium text-gray-900 mb-2">Ticket Generated!</h4>
                                     <p class="text-gray-600 mb-4">Your ticket has been sent to <span x-text="customer.email" class="font-semibold"></span></p>
                                     
-                                    <!-- Ticket Preview -->
-                                    <div id="ticket-preview" class="mb-4 p-4 border rounded-lg bg-white">
-                                        <div class="ticket-design p-4 text-center relative">
-                                            <div class="perforation"></div>
-                                            <h2 class="text-xl font-bold mb-2">Kabati Youth FC</h2>
-                                            <h3 class="text-lg font-semibold mb-1" x-text="selectedMatch.homeTeam + ' vs ' + selectedMatch.awayTeam"></h3>
-                                            <p class="text-sm mb-1" x-text="selectedMatch.date + ' • ' + selectedMatch.time"></p>
-                                            <p class="text-sm mb-3" x-text="selectedMatch.stadium"></p>
-                                            <div class="flex justify-center mb-3">
-                                                <div id="ticket-qrcode" class="bg-white p-2 rounded"></div>
+                                    <!-- Custom Ticket Preview -->
+                                    <div id="ticket-preview" class="mb-4 p-4">
+                                        <div class="kabati-ticket p-6 text-center relative ticket-glow">
+                                            <div class="bee-pattern"></div>
+                                            <div class="ticket-perforation"></div>
+                                            
+                                            <!-- NSL & Club Header -->
+                                            <div class="flex items-center justify-center mb-4">
+                                                <img src="teamlogo/nsllogo.png" alt="NSL" class="nsl-logo-img mr-3">
+                                                <img src="teamlogo/kabati.png" alt="Kabati Youth FC" class="match-logo">
                                             </div>
-                                            <p class="text-sm font-bold">GENERAL ADMISSION</p>
-                                            <p class="text-xs mt-2" x-text="'Ticket #: ' + ticketId"></p>
-                                            <p class="text-xs" x-text="'Holder: ' + customer.name"></p>
+                                            
+                                            <h2 class="text-2xl font-bold mb-2">Kabati Youth FC</h2>
+                                            <p class="text-sm opacity-90 mb-4">The Bees • Official Match Ticket</p>
+                                            
+                                            <div class="ticket-divider"></div>
+                                            
+                                            <!-- Match Details -->
+                                            <div class="flex items-center justify-center mb-4">
+                                                <img src="teamlogo/kabati.png" :alt="selectedMatch.homeTeam" class="team-logo mx-2">
+                                                <div class="text-xl font-black mx-4">VS</div>
+                                                <img :src="'teamlogo/' + selectedMatch.awayTeamLogo" :alt="selectedMatch.awayTeam" class="team-logo mx-2">
+                                            </div>
+                                            <h3 class="text-xl font-bold mb-2" x-text="selectedMatch.homeTeam + ' vs ' + selectedMatch.awayTeam"></h3>
+                                            <p class="text-sm mb-1" x-text="selectedMatch.date + ' • ' + selectedMatch.time"></p>
+                                            <p class="text-sm mb-4" x-text="selectedMatch.stadium"></p>
+                                            
+                                            <!-- QR Code -->
+                                            <div class="flex justify-center mb-4">
+                                                <div class="bg-white p-3 rounded-lg shadow-lg">
+                                                    <div id="ticket-qrcode" class="bg-white"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="ticket-divider"></div>
+                                            
+                                            <!-- Ticket Info -->
+                                            <p class="text-lg font-bold mb-2">GENERAL ADMISSION</p>
+                                            <p class="text-sm mb-1" x-text="'Ticket #: ' + ticketId"></p>
+                                            <p class="text-sm mb-1" x-text="'Holder: ' + customer.name"></p>
+                                            <p class="text-sm font-bold text-yellow-300">KSh 100 (Pay at Gate)</p>
                                         </div>
                                     </div>
                                     
@@ -759,7 +904,10 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <!-- Club Info -->
                 <div>
-                    <h3 class="text-xl font-bold mb-4">Kabati Youth FC</h3>
+                    <div class="flex items-center mb-4">
+                        <img src="teamlogo/kabati.png" alt="Kabati Youth FC" class="w-12 h-12 rounded-full object-contain bg-red-900 p-1 mr-3">
+                        <h3 class="text-xl font-bold">Kabati Youth FC</h3>
+                    </div>
                     <p class="text-gray-300 mb-4">The Bees - Proudly representing Murang'a in the National Super League.</p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-white transition" aria-label="Facebook">
@@ -817,211 +965,213 @@
         </div>
     </footer>
 
-   <script>
-    function kabatiTicketing() {
-        return {
-            // App State
-            activeTab: 'matches',
-            mobileMenuOpen: false,
-            getTicketModalOpen: false,
-            ticketDisplayOpen: false,
-            qrScannerOpen: false,
-            qrResultOpen: false,
-            
-            // Ticket Selection
-            selectedMatch: {},
-            ticketId: '',
-            currentTicket: {},
-            
-            // Customer Info
-            customer: {
-                name: '',
-                email: '',
-                phone: ''
-            },
-            
-            // Match Data - Only home matches at Thika Stadium
-            homeMatches: [
-                {
-                    id: 1,
-                    competition: "National Super League",
-                    homeTeam: "Kabati Youth",
-                    awayTeam: "Luanda Villa",
-                    homeRecord: "(1-1-1)",
-                    awayRecord: "(1-2-0)",
-                    date: "October 19, 2025",
-                    time: "12:00 PM",
-                    stadium: "Thika Stadium",
-                    location: "Thika",
-                    status: "Tickets Available"
-                },
-                {
-                    id: 2,
-                    competition: "National Super League", 
-                    homeTeam: "Kabati Youth",
-                    awayTeam: "Naivas FC",
-                    homeRecord: "(1-1-1)",
-                    awayRecord: "(1-1-1)",
-                    date: "October 26, 2025",
-                    time: "3:00 PM", 
-                    stadium: "Thika Stadium",
-                    location: "Thika",
-                    status: "Tickets Available"
-                },
-                {
-                    id: 3,
-                    competition: "National Super League",
-                    homeTeam: "Kabati Youth", 
-                    awayTeam: "Mombasa Elite",
-                    homeRecord: "(1-1-1)",
-                    awayRecord: "(2-0-1)",
-                    date: "November 9, 2025",
-                    time: "2:00 PM",
-                    stadium: "Thika Stadium",
-                    location: "Thika",
-                    status: "Coming Soon"
-                }
-            ],
-            
-            // Purchased Tickets
-            purchasedTickets: [
-                // Sample past ticket
-                {
-                    id: 1001,
-                    matchTitle: "Kabati Youth vs Mwatate United",
-                    matchDate: "October 12, 2025",
-                    matchTime: "3:00 PM",
-                    stadium: "Thika Stadium",
-                    ticketId: "KYFC1001",
-                    status: "Used",
-                    customerName: "Sample Customer"
-                }
-            ],
-            
-            // Computed Properties
-            get upcomingTickets() {
-                return this.purchasedTickets.filter(ticket => {
-                    const ticketDate = new Date(ticket.matchDate);
-                    const today = new Date();
-                    return ticketDate >= today && ticket.status !== 'Used';
-                });
-            },
-            
-            get pastTickets() {
-                return this.purchasedTickets.filter(ticket => {
-                    const ticketDate = new Date(ticket.matchDate);
-                    const today = new Date();
-                    return ticketDate < today || ticket.status === 'Used';
-                });
-            },
-            
-            // Methods
-            scrollToMatches() {
-                document.getElementById('upcoming-matches').scrollIntoView({ 
-                    behavior: 'smooth' 
-                });
-            },
-            
-            getTicket(match) {
-                this.selectedMatch = match;
-                // Reset customer info
-                this.customer = {
+    <script>
+        function kabatiTicketing() {
+            return {
+                // App State
+                activeTab: 'matches',
+                mobileMenuOpen: false,
+                getTicketModalOpen: false,
+                ticketDisplayOpen: false,
+                qrScannerOpen: false,
+                qrResultOpen: false,
+                
+                // Ticket Selection
+                selectedMatch: {},
+                ticketId: '',
+                currentTicket: {},
+                
+                // Customer Info
+                customer: {
                     name: '',
                     email: '',
                     phone: ''
-                };
-                this.getTicketModalOpen = true;
-            },
-            
-            generateTicket() {
-                // Generate ticket ID
-                this.ticketId = 'KYFC' + Date.now().toString().slice(-6);
+                },
                 
-                // Create ticket object with customer data
-                this.currentTicket = {
-                    id: Date.now(),
-                    matchTitle: this.selectedMatch.homeTeam + ' vs ' + this.selectedMatch.awayTeam,
-                    matchDate: this.selectedMatch.date,
-                    matchTime: this.selectedMatch.time,
-                    stadium: this.selectedMatch.stadium,
-                    ticketId: this.ticketId,
-                    status: 'Active',
-                    customerName: this.customer.name,
-                    customerEmail: this.customer.email
-                };
+                // Match Data - Only home matches at Thika Stadium
+                homeMatches: [
+                    {
+                        id: 1,
+                        competition: "National Super League",
+                        homeTeam: "Kabati Youth",
+                        awayTeam: "Luanda Villa",
+                        awayTeamLogo: "luanda.png",
+                        homeRecord: "(1-1-1)",
+                        awayRecord: "(1-2-0)",
+                        date: "October 19, 2025",
+                        time: "12:00 PM",
+                        stadium: "Thika Stadium",
+                        location: "Thika",
+                        status: "Tickets Available"
+                    },
+                    {
+                        id: 2,
+                        competition: "National Super League", 
+                        homeTeam: "Kabati Youth",
+                        awayTeam: "Naivas FC",
+                        awayTeamLogo: "nzoia.png",
+                        homeRecord: "(1-1-1)",
+                        awayRecord: "(1-1-1)",
+                        date: "October 26, 2025",
+                        time: "3:00 PM", 
+                        stadium: "Thika Stadium",
+                        location: "Thika",
+                        status: "Tickets Available"
+                    },
+                    {
+                        id: 3,
+                        competition: "National Super League",
+                        homeTeam: "Kabati Youth", 
+                        awayTeam: "Mombasa Elite",
+                        awayTeamLogo: "mcf.png",
+                        homeRecord: "(1-1-1)",
+                        awayRecord: "(2-0-1)",
+                        date: "November 9, 2025",
+                        time: "2:00 PM",
+                        stadium: "Thika Stadium",
+                        location: "Thika",
+                        status: "Coming Soon"
+                    },
+                    {
+                        id: 4,
+                        competition: "National Super League",
+                        homeTeam: "Kabati Youth", 
+                        awayTeam: "Migori Youth",
+                        awayTeamLogo: "migori.png",
+                        homeRecord: "(1-1-1)",
+                        awayRecord: "(1-1-1)",
+                        date: "November 16, 2025",
+                        time: "3:00 PM",
+                        stadium: "Thika Stadium",
+                        location: "Thika",
+                        status: "Coming Soon"
+                    },
+                    {
+                        id: 5,
+                        competition: "National Super League",
+                        homeTeam: "Kabati Youth", 
+                        awayTeam: "Mwatate United",
+                        awayTeamLogo: "mwatate.png",
+                        homeRecord: "(1-1-1)",
+                        awayRecord: "(1-2-0)",
+                        date: "November 23, 2025",
+                        time: "2:00 PM",
+                        stadium: "Thika Stadium",
+                        location: "Thika",
+                        status: "Coming Soon"
+                    },
+                    {
+                        id: 6,
+                        competition: "National Super League",
+                        homeTeam: "Kabati Youth", 
+                        awayTeam: "Talanta FC",
+                        awayTeamLogo: "talanta.png",
+                        homeRecord: "(1-1-1)",
+                        awayRecord: "(2-0-1)",
+                        date: "November 30, 2025",
+                        time: "3:00 PM",
+                        stadium: "Thika Stadium",
+                        location: "Thika",
+                        status: "Coming Soon"
+                    }
+                ],
                 
-                // Add to purchased tickets
-                this.purchasedTickets.push({...this.currentTicket});
+                // Purchased Tickets
+                purchasedTickets: [
+                    // Sample past ticket
+                    {
+                        id: 1001,
+                        matchTitle: "Kabati Youth vs Mwatate United",
+                        matchDate: "October 12, 2025",
+                        matchTime: "3:00 PM",
+                        stadium: "Thika Stadium",
+                        ticketId: "KYFC1001",
+                        status: "Used",
+                        customerName: "Sample Customer"
+                    }
+                ],
                 
-                // Show ticket first, then generate QR code
-                this.getTicketModalOpen = false;
-                this.ticketDisplayOpen = true;
+                // Computed Properties
+                get upcomingTickets() {
+                    return this.purchasedTickets.filter(ticket => {
+                        const ticketDate = new Date(ticket.matchDate);
+                        const today = new Date();
+                        return ticketDate >= today && ticket.status !== 'Used';
+                    });
+                },
                 
-                // Generate QR code after a small delay to ensure DOM is updated
-                setTimeout(() => {
-                    this.generateQRCode();
-                }, 100);
-            },
-            
-            generateQRCode() {
-                // Clear previous QR code
-                const qrContainer = document.getElementById('ticket-qrcode');
-                if (qrContainer) {
-                    qrContainer.innerHTML = '';
+                get pastTickets() {
+                    return this.purchasedTickets.filter(ticket => {
+                        const ticketDate = new Date(ticket.matchDate);
+                        const today = new Date();
+                        return ticketDate < today || ticket.status === 'Used';
+                    });
+                },
+                
+                // Methods
+                scrollToMatches() {
+                    document.getElementById('upcoming-matches').scrollIntoView({ 
+                        behavior: 'smooth' 
+                    });
+                },
+                
+                getTicket(match) {
+                    this.selectedMatch = match;
+                    // Reset customer info
+                    this.customer = {
+                        name: '',
+                        email: '',
+                        phone: ''
+                    };
+                    this.getTicketModalOpen = true;
+                },
+                
+                generateTicket() {
+                    // Generate ticket ID
+                    this.ticketId = 'KYFC' + Date.now().toString().slice(-6);
                     
-                    // Generate QR code with ticket information
-                    const qrData = JSON.stringify({
+                    // Create ticket object with customer data
+                    this.currentTicket = {
+                        id: Date.now(),
+                        matchTitle: this.selectedMatch.homeTeam + ' vs ' + this.selectedMatch.awayTeam,
+                        matchDate: this.selectedMatch.date,
+                        matchTime: this.selectedMatch.time,
+                        stadium: this.selectedMatch.stadium,
                         ticketId: this.ticketId,
-                        match: this.currentTicket.matchTitle,
-                        date: this.currentTicket.matchDate,
-                        customer: this.customer.name
-                    });
+                        status: 'Active',
+                        customerName: this.customer.name,
+                        customerEmail: this.customer.email,
+                        awayTeamLogo: this.selectedMatch.awayTeamLogo
+                    };
                     
-                    // Use QRCode.toCanvas with proper error handling
-                    QRCode.toCanvas(qrContainer, qrData, {
-                        width: 120,
-                        margin: 1,
-                        color: {
-                            dark: '#dc2626',
-                            light: '#FFFFFF'
-                        }
-                    }, function (error) {
-                        if (error) {
-                            console.error('QR Code error:', error);
-                            // Create fallback
-                            qrContainer.innerHTML = '<div style="width:120px;height:120px;background:#dc2626;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;">TICKET</div>';
-                        }
-                    });
-                }
-            },
-            
-            sendEmailConfirmation() {
-                // In a real app, this would call an email API
-                console.log(`Email sent to ${this.customer.email} with ticket details`);
-            },
-            
-            viewTicket(ticket) {
-                this.currentTicket = ticket;
-                // Store customer name for display
-                if (ticket.customerName) {
-                    this.customer.name = ticket.customerName;
-                }
+                    // Add to purchased tickets
+                    this.purchasedTickets.push({...this.currentTicket});
+                    
+                    // Show ticket first, then generate QR code
+                    this.getTicketModalOpen = false;
+                    this.ticketDisplayOpen = true;
+                    
+                    // Generate QR code after a small delay to ensure DOM is updated
+                    setTimeout(() => {
+                        this.generateQRCode();
+                    }, 100);
+                },
                 
-                this.ticketDisplayOpen = true;
-                
-                // Regenerate QR code after a small delay
-                setTimeout(() => {
+                generateQRCode() {
+                    // Clear previous QR code
                     const qrContainer = document.getElementById('ticket-qrcode');
                     if (qrContainer) {
                         qrContainer.innerHTML = '';
                         
+                        // Generate QR code with ticket information
                         const qrData = JSON.stringify({
-                            ticketId: ticket.ticketId,
-                            match: ticket.matchTitle,
-                            date: ticket.matchDate,
-                            customer: ticket.customerName || 'Ticket Holder'
+                            ticketId: this.ticketId,
+                            match: this.currentTicket.matchTitle,
+                            date: this.currentTicket.matchDate,
+                            customer: this.customer.name
                         });
                         
+                        // Use QRCode.toCanvas with proper error handling
                         QRCode.toCanvas(qrContainer, qrData, {
                             width: 120,
                             margin: 1,
@@ -1032,98 +1182,40 @@
                         }, function (error) {
                             if (error) {
                                 console.error('QR Code error:', error);
+                                // Create fallback
                                 qrContainer.innerHTML = '<div style="width:120px;height:120px;background:#dc2626;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;">TICKET</div>';
                             }
                         });
                     }
-                }, 100);
-            },
-            
-            async downloadTicketAsPDF(ticket) {
-                try {
-                    // Create a temporary ticket element with NSL logo
-                    const ticketElement = document.createElement('div');
-                    ticketElement.style.width = '400px';
-                    ticketElement.style.padding = '20px';
-                    ticketElement.style.backgroundColor = 'white';
-                    ticketElement.style.fontFamily = 'Arial, sans-serif';
-                    ticketElement.style.position = 'fixed';
-                    ticketElement.style.left = '-1000px';
-                    ticketElement.style.top = '0';
+                },
+                
+                sendEmailConfirmation() {
+                    // In a real app, this would call an email API
+                    console.log(`Email sent to ${this.customer.email} with ticket details`);
+                },
+                
+                viewTicket(ticket) {
+                    this.currentTicket = ticket;
+                    // Store customer name for display
+                    if (ticket.customerName) {
+                        this.customer.name = ticket.customerName;
+                    }
                     
-                    // Get customer name from ticket or current customer
-                    const customerName = ticket.customerName || this.customer.name || 'Ticket Holder';
+                    this.ticketDisplayOpen = true;
                     
-                    // Ticket content with NSL logo
-                    ticketElement.innerHTML = `
-                        <div style="text-align: center; border: 2px solid #dc2626; border-radius: 12px; padding: 20px; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; position: relative; overflow: hidden;">
-                            <!-- NSL Logo Section -->
-                            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px;">
-                                <div style="background: white; padding: 8px; border-radius: 8px; margin-right: 10px;">
-                                    <div style="width: 40px; height: 40px; background: #dc2626; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">NSL</div>
-                                </div>
-                                <div style="text-align: left;">
-                                    <div style="font-size: 14px; font-weight: bold;">NATIONAL SUPER LEAGUE</div>
-                                    <div style="font-size: 10px; opacity: 0.9;">Official Match Ticket</div>
-                                </div>
-                            </div>
+                    // Regenerate QR code after a small delay
+                    setTimeout(() => {
+                        const qrContainer = document.getElementById('ticket-qrcode');
+                        if (qrContainer) {
+                            qrContainer.innerHTML = '';
                             
-                            <!-- Club Header -->
-                            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 5px;">Kabati Youth FC</h2>
-                            <div style="height: 2px; background: white; margin: 10px 0;"></div>
+                            const qrData = JSON.stringify({
+                                ticketId: ticket.ticketId,
+                                match: ticket.matchTitle,
+                                date: ticket.matchDate,
+                                customer: ticket.customerName || 'Ticket Holder'
+                            });
                             
-                            <!-- Match Details -->
-                            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">${ticket.matchTitle}</h3>
-                            <p style="font-size: 14px; margin-bottom: 5px;">${ticket.matchDate} • ${ticket.matchTime}</p>
-                            <p style="font-size: 14px; margin-bottom: 15px;">${ticket.stadium}</p>
-                            
-                            <!-- QR Code Container -->
-                            <div style="background: white; padding: 15px; border-radius: 8px; display: inline-block; margin-bottom: 15px;">
-                                <div id="temp-pdf-qrcode"></div>
-                            </div>
-                            
-                            <!-- Ticket Info -->
-                            <p style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">GENERAL ADMISSION</p>
-                            <p style="font-size: 12px; margin-bottom: 3px;">Ticket #: ${ticket.ticketId}</p>
-                            <p style="font-size: 12px; margin-bottom: 3px;">Holder: ${customerName}</p>
-                            <p style="font-size: 12px;">Price: KSh 100 (Pay at Gate)</p>
-                            
-                            <!-- Perforation -->
-                            <div style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); height: 80%; width: 20px; background: radial-gradient(circle at 0 10px, transparent 10px, white 11px) 0 0, radial-gradient(circle at 0 30px, transparent 10px, white 11px) 0 0; background-size: 20px 40px; background-repeat: repeat-y;"></div>
-                            
-                            <!-- Top Border Pattern -->
-                            <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: repeating-linear-gradient(45deg, transparent, transparent 10px, #fbbf24 10px, #fbbf24 20px);"></div>
-                        </div>
-                        
-                        <!-- Important Information -->
-                        <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dc2626;">
-                            <h4 style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #dc2626;">Important Information:</h4>
-                            <ul style="font-size: 11px; color: #666; margin: 0; padding-left: 15px;">
-                                <li>Present this QR code at Thika Stadium gate</li>
-                                <li>Payment of KSh 100 is required at the gate</li>
-                                <li>Gates open 1.5 hours before kickoff</li>
-                                <li>This ticket is non-transferable after entry</li>
-                                <li>NSL & Kabati Youth FC Official Ticket</li>
-                            </ul>
-                        </div>
-                    `;
-
-                    // Add to DOM temporarily
-                    document.body.appendChild(ticketElement);
-
-                    // Generate QR code data
-                    const qrData = JSON.stringify({
-                        ticketId: ticket.ticketId,
-                        match: ticket.matchTitle,
-                        date: ticket.matchDate,
-                        customer: customerName,
-                        league: "NSL"
-                    });
-
-                    // Create QR code
-                    const qrContainer = document.getElementById('temp-pdf-qrcode');
-                    if (qrContainer) {
-                        await new Promise((resolve) => {
                             QRCode.toCanvas(qrContainer, qrData, {
                                 width: 120,
                                 margin: 1,
@@ -1133,83 +1225,185 @@
                                 }
                             }, function (error) {
                                 if (error) {
-                                    console.error('QR Code generation failed:', error);
-                                    // Create a simple fallback
-                                    const canvas = document.createElement('canvas');
-                                    canvas.width = 120;
-                                    canvas.height = 120;
-                                    const ctx = canvas.getContext('2d');
-                                    ctx.fillStyle = '#dc2626';
-                                    ctx.fillRect(0, 0, 120, 120);
-                                    ctx.fillStyle = 'white';
-                                    ctx.font = '12px Arial';
-                                    ctx.fillText('TICKET', 40, 60);
-                                    qrContainer.appendChild(canvas);
+                                    console.error('QR Code error:', error);
+                                    qrContainer.innerHTML = '<div style="width:120px;height:120px;background:#dc2626;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;">TICKET</div>';
                                 }
-                                resolve();
                             });
+                        }
+                    }, 100);
+                },
+                
+                async downloadTicketAsPDF(ticket) {
+                    try {
+                        // Create a temporary ticket element with custom styling
+                        const ticketElement = document.createElement('div');
+                        ticketElement.style.width = '400px';
+                        ticketElement.style.padding = '20px';
+                        ticketElement.style.backgroundColor = 'white';
+                        ticketElement.style.fontFamily = 'Arial, sans-serif';
+                        ticketElement.style.position = 'fixed';
+                        ticketElement.style.left = '-1000px';
+                        ticketElement.style.top = '0';
+                        
+                        // Get customer name from ticket or current customer
+                        const customerName = ticket.customerName || this.customer.name || 'Ticket Holder';
+                        
+                        // Custom ticket HTML with our styles
+                        ticketElement.innerHTML = `
+                            <div class="kabati-ticket" style="padding: 24px; text-align: center; color: white; position: relative; overflow: hidden;">
+                                <div class="bee-pattern"></div>
+                                <div class="ticket-perforation"></div>
+                                
+                                <!-- NSL & Club Header -->
+                                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                                    <img src="teamlogo/nsllogo.png" alt="NSL" style="width: 60px; height: 60px; object-fit: contain; border-radius: 8px; background: white; padding: 4px; border: 2px solid #1e3a8a; margin-right: 12px;">
+                                    <img src="teamlogo/kabati.png" alt="Kabati Youth FC" style="width: 80px; height: 80px; object-fit: contain; background: white; border-radius: 12px; padding: 8px; border: 3px solid #fbbf24; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);">
+                                </div>
+                                
+                                <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">Kabati Youth FC</h2>
+                                <p style="font-size: 14px; opacity: 0.9; margin-bottom: 16px;">The Bees • Official Match Ticket</p>
+                                
+                                <div style="height: 2px; background: linear-gradient(90deg, transparent, #fbbf24, transparent); margin: 10px 0;"></div>
+                                
+                                <!-- Match Details -->
+                                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                                    <img src="teamlogo/kabati.png" alt="${ticket.matchTitle.split(' vs ')[0]}" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px; background: white; padding: 4px; border: 2px solid #e5e7eb; margin: 0 8px;">
+                                    <div style="font-size: 20px; font-weight: black; margin: 0 16px;">VS</div>
+                                    <img src="teamlogo/${ticket.awayTeamLogo}" alt="${ticket.matchTitle.split(' vs ')[1]}" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px; background: white; padding: 4px; border: 2px solid #e5e7eb; margin: 0 8px;">
+                                </div>
+                                <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 8px;">${ticket.matchTitle}</h3>
+                                <p style="font-size: 14px; margin-bottom: 4px;">${ticket.matchDate} • ${ticket.matchTime}</p>
+                                <p style="font-size: 14px; margin-bottom: 16px;">${ticket.stadium}</p>
+                                
+                                <!-- QR Code Container -->
+                                <div style="background: white; padding: 12px; border-radius: 8px; display: inline-block; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                    <div id="temp-pdf-qrcode"></div>
+                                </div>
+                                
+                                <div style="height: 2px; background: linear-gradient(90deg, transparent, #fbbf24, transparent); margin: 10px 0;"></div>
+                                
+                                <!-- Ticket Info -->
+                                <p style="font-size: 16px; font-weight: bold; margin-bottom: 8px;">GENERAL ADMISSION</p>
+                                <p style="font-size: 12px; margin-bottom: 4px;">Ticket #: ${ticket.ticketId}</p>
+                                <p style="font-size: 12px; margin-bottom: 4px;">Holder: ${customerName}</p>
+                                <p style="font-size: 12px; font-weight: bold; color: #fbbf24;">KSh 100 (Pay at Gate)</p>
+                            </div>
+                            
+                            <!-- Important Information -->
+                            <div style="margin-top: 16px; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dc2626;">
+                                <h4 style="font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #dc2626;">Important Information:</h4>
+                                <ul style="font-size: 11px; color: #666; margin: 0; padding-left: 16px;">
+                                    <li>Present this QR code at Thika Stadium gate</li>
+                                    <li>Payment of KSh 100 is required at the gate</li>
+                                    <li>Gates open 1.5 hours before kickoff</li>
+                                    <li>This ticket is non-transferable after entry</li>
+                                    <li>NSL & Kabati Youth FC Official Ticket</li>
+                                </ul>
+                            </div>
+                        `;
+
+                        // Add to DOM temporarily
+                        document.body.appendChild(ticketElement);
+
+                        // Generate QR code data
+                        const qrData = JSON.stringify({
+                            ticketId: ticket.ticketId,
+                            match: ticket.matchTitle,
+                            date: ticket.matchDate,
+                            customer: customerName,
+                            league: "NSL"
                         });
 
-                        // Wait a bit for QR code to render
-                        await new Promise(resolve => setTimeout(resolve, 500));
+                        // Create QR code
+                        const qrContainer = document.getElementById('temp-pdf-qrcode');
+                        if (qrContainer) {
+                            await new Promise((resolve) => {
+                                QRCode.toCanvas(qrContainer, qrData, {
+                                    width: 120,
+                                    margin: 1,
+                                    color: {
+                                        dark: '#dc2626',
+                                        light: '#FFFFFF'
+                                    }
+                                }, function (error) {
+                                    if (error) {
+                                        console.error('QR Code generation failed:', error);
+                                        // Create a simple fallback
+                                        const canvas = document.createElement('canvas');
+                                        canvas.width = 120;
+                                        canvas.height = 120;
+                                        const ctx = canvas.getContext('2d');
+                                        ctx.fillStyle = '#dc2626';
+                                        ctx.fillRect(0, 0, 120, 120);
+                                        ctx.fillStyle = 'white';
+                                        ctx.font = '12px Arial';
+                                        ctx.fillText('TICKET', 40, 60);
+                                        qrContainer.appendChild(canvas);
+                                    }
+                                    resolve();
+                                });
+                            });
 
-                        // Generate PDF
-                        const canvas = await html2canvas(ticketElement, {
-                            scale: 2,
-                            useCORS: true,
-                            logging: false,
-                            backgroundColor: '#ffffff'
-                        });
+                            // Wait a bit for QR code to render
+                            await new Promise(resolve => setTimeout(resolve, 500));
 
-                        const imgData = canvas.toDataURL('image/png');
-                        const { jsPDF } = window.jspdf;
-                        const pdf = new jsPDF('p', 'mm', 'a6');
-                        
-                        const imgWidth = 105;
-                        const imgHeight = canvas.height * imgWidth / canvas.width;
-                        
-                        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-                        
-                        // Add NSL and club branding to PDF metadata
-                        pdf.setProperties({
-                            title: `Kabati Youth FC Ticket - ${ticket.matchTitle}`,
-                            subject: 'NSL Match Ticket',
-                            author: 'Kabati Youth FC - National Super League',
-                            keywords: 'nsl, kabati youth, football ticket'
-                        });
+                            // Generate PDF
+                            const canvas = await html2canvas(ticketElement, {
+                                scale: 2,
+                                useCORS: true,
+                                logging: false,
+                                backgroundColor: '#ffffff'
+                            });
 
-                        pdf.save(`NSL-KabatiYouth-Ticket-${ticket.ticketId}.pdf`);
-                        
-                        // Clean up
-                        document.body.removeChild(ticketElement);
-                        
-                        // Show success message
-                        alert('Ticket downloaded successfully!');
+                            const imgData = canvas.toDataURL('image/png');
+                            const { jsPDF } = window.jspdf;
+                            const pdf = new jsPDF('p', 'mm', 'a6');
+                            
+                            const imgWidth = 105;
+                            const imgHeight = canvas.height * imgWidth / canvas.width;
+                            
+                            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                            
+                            // Add NSL and club branding to PDF metadata
+                            pdf.setProperties({
+                                title: `Kabati Youth FC Ticket - ${ticket.matchTitle}`,
+                                subject: 'NSL Match Ticket',
+                                author: 'Kabati Youth FC - National Super League',
+                                keywords: 'nsl, kabati youth, football ticket'
+                            });
+
+                            pdf.save(`NSL-KabatiYouth-Ticket-${ticket.ticketId}.pdf`);
+                            
+                            // Clean up
+                            document.body.removeChild(ticketElement);
+                            
+                            // Show success message
+                            alert('Ticket downloaded successfully!');
+                        }
+                    } catch (error) {
+                        console.error('Error generating PDF:', error);
+                        alert('Error generating ticket. Please try again.');
+                        // Clean up in case of error
+                        const tempElement = document.getElementById('temp-pdf-qrcode');
+                        if (tempElement && tempElement.parentNode) {
+                            document.body.removeChild(tempElement.parentNode);
+                        }
                     }
-                } catch (error) {
-                    console.error('Error generating PDF:', error);
-                    alert('Error generating ticket. Please try again.');
-                    // Clean up in case of error
-                    const tempElement = document.getElementById('temp-pdf-qrcode');
-                    if (tempElement && tempElement.parentNode) {
-                        document.body.removeChild(tempElement.parentNode);
-                    }
+                },
+                
+                openQRScanner() {
+                    this.qrScannerOpen = true;
+                    this.mobileMenuOpen = false;
+                },
+                
+                simulateQRScan() {
+                    this.qrScannerOpen = false;
+                    setTimeout(() => {
+                        this.qrResultOpen = true;
+                    }, 300);
                 }
-            },
-            
-            openQRScanner() {
-                this.qrScannerOpen = true;
-                this.mobileMenuOpen = false;
-            },
-            
-            simulateQRScan() {
-                this.qrScannerOpen = false;
-                setTimeout(() => {
-                    this.qrResultOpen = true;
-                }, 300);
-            }
-        };
-    }
-</script>
+            };
+        }
+    </script>
 </body>
 </html>
